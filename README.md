@@ -65,6 +65,8 @@ pip install -r requirements.txt
 | `agents/openai.yaml` | Codex UI metadata and invocation policy |
 | `references/freecad-mcp.md` | Safe workflow for live FreeCAD documents |
 | `references/bc250-enclosure.md` | BC250/Dell N870P-S0 enclosure requirements |
+| `references/bc250-components.yaml` | Verified BC250 mesh identity and Dell PSU envelope |
+| `scripts/measure_reference_mesh.py` | Hash and dimension verification for reference STL files |
 | `gridfinity.py` | Tested Gridfinity bin generator (base profile, stacking lip, magnets, compartments, custom pockets). Vendored next to generated scripts. |
 | `outline_from_scan.py` | Extracts a pocket outline from a 3D scan of an object (align, scale, slice, union), ready for `add_polygon_pocket`. |
 | `examples/` | Model scripts built on the gridfinity module (D110 cradle, MX Master 3 diagonal bin). |

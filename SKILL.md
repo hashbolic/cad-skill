@@ -26,6 +26,7 @@ Build in logical phases—envelope, interfaces, functional features, finish—bu
 
 1. Establish the source of truth, units, coordinate system, component envelopes, keep-outs, printer volume, material, nozzle, and service requirements.
 2. Research or measure real interfaces. Never guess connector bodies, mounting patterns, cable bend radii, PSU envelopes, or fastener geometry when fit depends on them. Record each value's source or mark it as an assumption.
+   For reference meshes, run `scripts/measure_reference_mesh.py` and retain its hash, bounds, extents, units assumption, and validity result with the design evidence.
 3. Put user-adjustable dimensions and tolerances in one parameter section. Use descriptive names and millimetres.
 4. Build the simplest valid solids first. Add interfaces and clearances before cosmetic details. Preserve recoverable intermediate parts and meaningful object names.
 5. Validate geometry and assembly after material changes. Fix root causes of failed booleans, self-intersections, zero-thickness faces, or non-manifold meshes.

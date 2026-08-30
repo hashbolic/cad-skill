@@ -1,0 +1,56 @@
+schema_version: 1
+units: mm
+
+bc250:
+  role: authoritative_reference_mesh
+  preferred_filename: amd-bc-250.stl
+  sha256: 9D6880DD5BADDD6F24315B0AD206D83C2323033A163C96A561351DBAEDA0E832
+  mesh_units_assumption: mm
+  mesh_bounds:
+    min_xyz: [25.196554, -4.156800, 6.667380]
+    max_xyz: [56.696431, 308.000000, 150.439680]
+  mesh_coordinate_extents_xyz: [31.499878, 312.156800, 143.772300]
+  physical_axis_mapping:
+    length: mesh_y
+    width: mesh_z
+    height: mesh_x
+  measured_total_envelope:
+    length: 312.156800
+    width: 143.772300
+    height: 31.499878
+  mesh_watertight: false
+  mesh_use: collision_and_packaging_reference
+  dimension_tolerance: 0.05
+  pcb_outline_cross_check:
+    length: 304.66
+    width: 139.98
+    source: https://bc-250.com/cad
+    note: PCB outline only; do not replace the larger detailed component envelope.
+  alternate_local_mesh:
+    filename: bc250.stl
+    sha256: EA90D96368139009F748389EC82579000130DC6AEF5704FBB475F0B84EE8EE89
+    measured_extents_xyz: [324.0, 144.0, 31.5]
+    status: not_authoritative_for_this_project
+
+dell_n870p_s0:
+  role: nominal_body_envelope_until_measured_model_exists
+  rated_power_w: 870
+  body_envelope:
+    length: 206.0
+    width: 76.0
+    height: 67.0
+  dimension_status: corroborated_nominal_not_cad_exact
+  sources:
+    - https://www.cpumedics.com/dell-n870p-s0-870w-power-supply-for-poweredge-r710-t610/
+    - https://www.topmedia.nl/en-gb/power-supply-for-dell-poweredge-r710-t610-series-pcp--spsu--dl022
+  required_separate_keepouts:
+    - insertion_and_removal_sweep
+    - exhaust_and_intake
+    - hot_swap_edge_connector
+    - rigid_or_90_degree_adapter
+    - mains_input_and_protective_earth
+    - cable_bend_radius
+    - handle_and_latch
+    - mounting_or_retention_bracket
+  release_status: body_packaging_only
+  release_blocker: Measure or model all interfaces before freezing PSU mounts and panel openings.
