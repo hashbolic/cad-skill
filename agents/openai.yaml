@@ -1,0 +1,7 @@
+interface:
+  display_name: "Parametric CAD for Codex"
+  short_description: "Design and validate printable CAD parts"
+  default_prompt: "Use $parametric-3d-printing to design and validate a parametric FDM-ready enclosure."
+
+policy:
+  allow_implicit_invocation: true

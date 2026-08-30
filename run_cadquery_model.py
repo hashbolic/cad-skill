@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Run a generated CadQuery model script in a subprocess and emit a structured
-JSON result so Claude can parse success/failure without the user copy-pasting
+JSON result so Codex can parse success/failure without the user copy-pasting
 tracebacks.
 
 Usage:
@@ -44,6 +44,39 @@ import os
 import subprocess
 import sys
 import time
+
+
+# cadquery-ocp pip wheels can crash during Python finalization on Windows even
+# after a model was built and exported successfully (CadQuery issue #1911).
+# Run generated models behind a tiny bootstrap that preserves real exceptions,
+# flushes output, and skips only the broken interpreter-finalization path.
+_MODEL_BOOTSTRAP = r"""
+import os
+import runpy
+import sys
+import traceback
+
+exit_code = 0
+try:
+    runpy.run_path(sys.argv[1], run_name="__main__")
+except SystemExit as exc:
+    if exc.code is None:
+        exit_code = 0
+    elif isinstance(exc.code, int):
+        exit_code = exc.code
+    else:
+        print(exc.code, file=sys.stderr)
+        exit_code = 1
+except BaseException:
+    traceback.print_exc()
+    exit_code = 1
+
+sys.stdout.flush()
+sys.stderr.flush()
+if os.name == "nt":
+    os._exit(exit_code)
+raise SystemExit(exit_code)
+"""
 
 
 def _sibling(path, suffix):
@@ -175,7 +208,7 @@ def main():
 
     try:
         proc = subprocess.run(
-            [sys.executable, script_path],
+            [sys.executable, "-c", _MODEL_BOOTSTRAP, script_path],
             capture_output=True,
             text=True,
             timeout=args.timeout,

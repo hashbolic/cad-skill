@@ -1,6 +1,6 @@
-# CAD Skill for Claude Code
+# Parametric CAD Skill for Codex
 
-A [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skill for generating parametric 3D-printable models using [CadQuery](https://cadquery.readthedocs.io/). Describe a physical object, and Claude will write a parametric script, export STL, render previews, and iterate with you until it's right.
+A Codex skill for designing and validating parametric, 3D-printable models with [CadQuery](https://cadquery.readthedocs.io/) and an optional FreeCAD MCP workflow. Describe a physical object or provide an existing FCStd model; Codex can build editable geometry, export manufacturing files, render previews, and run printability checks.
 
 <p align="center">
   <img src="docs/magsafe_stand_preview.png" alt="MagSafe stand preview, 4 views" width="480">
@@ -30,19 +30,23 @@ The MX Master 3 bin above ([examples/mx_master3_bin_3x3.py](examples/mx_master3_
 
 ## Installation
 
+PowerShell:
+
+```powershell
+git clone https://github.com/hashbolic/cad-skill.git "$env:USERPROFILE\.codex\skills\parametric-3d-printing"
+```
+
+macOS/Linux:
+
 ```bash
-mkdir -p ~/.claude/skills
-git clone https://github.com/flowful-ai/cad-skill ~/.claude/skills/parametric-3d-printing
+git clone https://github.com/hashbolic/cad-skill.git "${CODEX_HOME:-$HOME/.codex}/skills/parametric-3d-printing"
 ```
 
 ## Usage
 
-Once installed, the skill activates in two ways inside Claude Code:
+Once installed, the skill can be selected automatically for printable CAD work or invoked explicitly as `$parametric-3d-printing`.
 
-- **Auto-trigger.** Describe a part you want to print ("design a wall mount for an Arduino Uno", "I need a snap-fit lid for this box") and Claude picks up the skill from its trigger keywords (3D print, STL, CadQuery, enclosure, bracket, and so on).
-- **Explicit slash command.** Type `/parametric-3d-printing` to invoke it directly, useful when your request does not contain the obvious keywords.
-
-Claude will then walk you through requirements, build the model in phases (base shape, features, finish), and deliver an STL plus a rendered preview.
+Codex chooses FreeCAD MCP for existing FCStd documents and assembly-oriented work, CadQuery for headless parametric parts, or a hybrid route for complex enclosures. The workflow is autonomous by default and pauses only for missing information that can invalidate physical fit or safety.
 
 ## Dependencies
 
@@ -57,12 +61,15 @@ pip install -r requirements.txt
 
 | File | Purpose |
 |------|---------|
-| `SKILL.md` | Skill definition and workflow instructions for Claude |
+| `SKILL.md` | Codex skill definition and workflow routing |
+| `agents/openai.yaml` | Codex UI metadata and invocation policy |
+| `references/freecad-mcp.md` | Safe workflow for live FreeCAD documents |
+| `references/bc250-enclosure.md` | BC250/Dell N870P-S0 enclosure requirements |
 | `gridfinity.py` | Tested Gridfinity bin generator (base profile, stacking lip, magnets, compartments, custom pockets). Vendored next to generated scripts. |
 | `outline_from_scan.py` | Extracts a pocket outline from a 3D scan of an object (align, scale, slice, union), ready for `add_polygon_pocket`. |
 | `examples/` | Model scripts built on the gridfinity module (D110 cradle, MX Master 3 diagonal bin). |
 | `preview.py` | Headless STL to 6-view PNG renderer (trimesh + pyrender). Use `--strict` to fail on non-watertight meshes. |
-| `run_cadquery_model.py` | Subprocess wrapper that runs a CadQuery script, captures errors, optionally renders the preview, and emits a JSON result so Claude can self-correct in a loop. |
+| `run_cadquery_model.py` | Subprocess wrapper that runs a CadQuery script, captures errors, works around the known Windows OCP shutdown crash, optionally renders the preview, and emits a JSON result so Codex can self-correct. |
 | `mesh_io.py` | STL loading with validation (no pyrender dependency). Used by the wrapper and converter. |
 | `stl_to_3mf.py` | Standalone STL to 3MF converter for Bambu Studio / PrusaSlicer. |
 | `design-review.md` | Visual inspection checklist and printability analysis |
@@ -74,4 +81,4 @@ The skill and scripts are licensed under the [PolyForm Noncommercial License 1.0
 
 ---
 
-Created by [Nicolas Chourrout](https://github.com/nchourrout) from [Flowful.ai](https://flowful.ai)
+Originally created by [Nicolas Chourrout](https://github.com/nchourrout) from [Flowful.ai](https://flowful.ai). Codex/FreeCAD adaptation maintained in this fork by hashbolic.

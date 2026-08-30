@@ -1,5 +1,4 @@
 import os
-import subprocess
 import sys
 
 import pytest
@@ -11,15 +10,10 @@ sys.path.insert(0, REPO_ROOT)
 @pytest.fixture
 def tmp_stl(tmp_path):
     """Generate a watertight 10mm cube STL on demand."""
+    import trimesh
+
     stl = tmp_path / "cube.stl"
-    script = tmp_path / "cube.py"
-    script.write_text(
-        "import cadquery as cq\n"
-        "r = cq.Workplane('XY').box(10, 10, 10)\n"
-        f"cq.exporters.export(r, {str(stl)!r},"
-        " tolerance=0.01, angularTolerance=0.1)\n"
-    )
-    subprocess.run([sys.executable, str(script)], check=True, cwd=str(tmp_path))
+    trimesh.creation.box(extents=(10, 10, 10)).export(stl)
     return stl
 
 
